@@ -26,7 +26,7 @@ const Tasks = db.define('tasks', {
     },
     finishDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     },
     status: {
         type: DataTypes.STRING,
