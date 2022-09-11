@@ -7,13 +7,14 @@ const usersRouter = express.Router();
 // controllers
 const {
     createUser,
-    getAllUsers
+    getAllUsers,
+    updateProfileUser
 } = require('../controllers/users.controllers');
 
 // endpoints
 usersRouter.post('/', createUser);
 usersRouter.get('/', getAllUsers);
-usersRouter.patch('/:id');
+usersRouter.patch('/:id', updateProfileUser);
 usersRouter.delete('/:id');
 
 module.exports = { usersRouter };

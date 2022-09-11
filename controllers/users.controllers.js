@@ -41,4 +41,40 @@ const createUser = async (req, res) => {
     }
 }
 
-module.exports = { createUser, getAllUsers };
+const updateProfileUser = async (req, res) => {
+    try {
+        // received name and email
+        const { name, email } = req.body;
+        // received id
+        const { id } = req.params;
+
+        // ¿exists user?
+        const user = await Users.findOne({ where: { id } });
+
+        // if not exists
+        if( !user ) {
+            return res.status(404).json({
+                status: 'error',
+                data: {
+                    message: 'user not found'
+                }
+            })
+        }
+
+        // if exists
+        await user.update({ name, email });
+
+        // response
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user
+            }
+        })
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports = { createUser, getAllUsers, updateProfileUser };
