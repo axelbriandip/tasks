@@ -1,10 +1,14 @@
 // models
 const { Users } = require('../models/users.model');
+const { Tasks } = require('../models/tasks.model');
 
 const getAllUsers = async (req, res) => {
     try {
         // received all users
-        const users = await Users.findAll();
+        const users = await Users.findAll({
+            attributes: [ 'id', 'name', 'email' ],
+            include: { model: Tasks, attributes: [ 'id', 'title', 'startDate', 'limitDate', 'finishDate' ] }
+        });
 
         // res
         res.status(200).json({
