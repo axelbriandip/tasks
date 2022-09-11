@@ -1,5 +1,6 @@
 // models
 const { Tasks } = require('../models/tasks.model');
+const { Users } = require('../models/users.model');
 
 const getAllTasksForStatus = async (req, res) => {
     try {
@@ -28,7 +29,10 @@ const getAllTasksForStatus = async (req, res) => {
 const getAllTasks = async (req, res) => {
     try {
         // received all users
-        const tasks = await Tasks.findAll();
+        const tasks = await Tasks.findAll({
+            attributes: [ 'id', 'title', 'startDate', 'limitDate', 'finishDate' ],
+            include: { model: Users, attributes: [ 'id', 'name', 'email' ] }
+        });
 
         // res
         res.status(200).json({
