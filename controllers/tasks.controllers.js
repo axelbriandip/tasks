@@ -1,6 +1,30 @@
 // models
 const { Tasks } = require('../models/tasks.model');
 
+const getAllTasksForStatus = async (req, res) => {
+    try {
+        // received status params
+        const { status } = req.params;
+
+        // received all users
+        const tasks = await Tasks.findAll({
+            where: {
+                status
+            }
+        });
+
+        // res
+        res.status(200).json({
+            status: 'success',
+            data: {
+                tasks
+            }
+        })
+
+    } catch (err) {
+        console.log(err);
+    }
+}
 const getAllTasks = async (req, res) => {
     try {
         // received all users
@@ -110,5 +134,6 @@ module.exports = {
     createTask,
     deleteTask,
     getAllTasks,
-    insertFinishDate
+    insertFinishDate,
+    getAllTasksForStatus
 };
