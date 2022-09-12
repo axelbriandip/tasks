@@ -27,4 +27,13 @@ const tasksExists = async (req, res, next) => {
     }
 }
 
-module.exports = { tasksExists };
+const compareDates = (limit, finish) => {
+    const finishConverted = new Date(finish);
+    const fin = `${finishConverted.getFullYear()}-${finishConverted.getMonth()+1}-${finishConverted.getDate()}`;
+    const lim = `${limit.getFullYear()}-${limit.getMonth()+1}-${limit.getDate()}`;
+    
+    if(fin > lim) return 1 // task late
+    else return 2 // task completed
+}
+
+module.exports = { tasksExists, compareDates };

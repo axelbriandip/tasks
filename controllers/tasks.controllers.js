@@ -2,13 +2,8 @@
 const { Tasks } = require('../models/tasks.model');
 const { Users } = require('../models/users.model');
 
-const compareDates = (limit, finish) => {
-    const lim = `${limit.getFullYear()}-${limit.getMonth()+1}-${limit.getDate()}`;
-    const finishConverted = new Date(finish);
-    const fin = `${finishConverted.getFullYear()}-${finishConverted.getMonth()+1}-${finishConverted.getDate()}`;
-    if(fin > lim) return 1 // task late
-    else return 2 // task completed
-}
+// middlewares
+const { compareDates } = require('../middlewares/tasks.middleware');
 
 const getAllTasks = async (req, res) => {
     try {
