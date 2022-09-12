@@ -2,30 +2,6 @@
 const { Tasks } = require('../models/tasks.model');
 const { Users } = require('../models/users.model');
 
-const getAllTasksForStatus = async (req, res) => {
-    try {
-        // received status params
-        const { status } = req.params;
-
-        // received all users
-        const tasks = await Tasks.findAll({
-            where: {
-                status
-            }
-        });
-
-        // res
-        res.status(200).json({
-            status: 'success',
-            data: {
-                tasks
-            }
-        })
-
-    } catch (err) {
-        console.log(err);
-    }
-}
 const getAllTasks = async (req, res) => {
     try {
         // received all users
@@ -41,6 +17,45 @@ const getAllTasks = async (req, res) => {
                 tasks
             }
         })
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const getAllTasksForStatus = async (req, res) => {
+    try {
+        // received status params
+        const { status } = req.params;
+
+        if(
+            status=='active' ||
+            status=='completed' ||
+            status=='late' ||
+            status=='cancelled'
+        ) {
+            // received all users
+            const tasks = await Tasks.findAll({
+                where: {
+                    status
+                }
+            });
+
+            // res
+            res.status(200).json({
+                status: 'success',
+                data: {
+                    tasks
+                }
+            })
+        } else {
+            return res.status(404).json({
+                status: 'error',
+                data: {
+                    message: 'status not valid'
+                }
+            })
+        }
 
     } catch (err) {
         console.log(err);
