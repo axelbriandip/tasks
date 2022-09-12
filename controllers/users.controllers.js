@@ -6,6 +6,7 @@ const getAllUsers = async (req, res) => {
     try {
         // received all users
         const users = await Users.findAll({
+            where: { status: 'active' }, // view only users actives
             attributes: [ 'id', 'name', 'email' ],
             include: { model: Tasks, attributes: [ 'id', 'title', 'startDate', 'limitDate', 'finishDate' ] }
         });
@@ -49,21 +50,9 @@ const updateProfileUser = async (req, res) => {
     try {
         // received name and email
         const { name, email } = req.body;
-        // received id
-        const { id } = req.params;
 
-        // ¿exists user?
-        const user = await Users.findOne({ where: { id } });
-
-        // if not exists
-        if( !user ) {
-            return res.status(404).json({
-                status: 'error',
-                data: {
-                    message: 'user not found'
-                }
-            })
-        }
+        // received 'user' from 'userExists'
+        const { user } = req;
 
         // if exists
         await user.update({ name, email });
@@ -83,18 +72,7 @@ const updateProfileUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const user = await Users.findOne({ where: { id } });
-
-        if( !user ) {
-            return res.status(404).json({
-                status: 'error',
-                data: {
-                    message: 'user not found'
-                }
-            })
-        }
+        const { user } = req;
 
         user.update({ status: 'disabled' });
 

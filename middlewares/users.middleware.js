@@ -1,3 +1,4 @@
+const { Users } = require('../models/users.model');
 const { body, validationResult } = require('express-validator');
 
 const checkValidations = (req, res, next) => {
@@ -37,4 +38,31 @@ const createUserValidator = [
     checkValidations
 ]
 
-module.exports = { createUserValidator };
+const userExists = async (req, res, next) => {
+    try {
+        // received id
+        const { id } = req.params;
+
+        // ¿exists user?
+        const user = await Users.findOne({ where: { id } });
+
+        // if not exists
+        if( !user ) {
+            return res.status(404).json({
+                status: 'error',
+                data: {
+                    message: 'user not found'
+                }
+            })
+        }
+
+        // if exists
+        req.user = user;
+
+        next();
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+module.exports = { createUserValidator, userExists };

@@ -3,7 +3,10 @@ const express = require('express');
 const usersRouter = express.Router();
 
 // middlewares
-const { createUserValidator } = require('../middlewares/users.middleware');
+const {
+    createUserValidator,
+    userExists
+} = require('../middlewares/users.middleware');
 
 // controllers
 const {
@@ -16,7 +19,7 @@ const {
 // endpoints
 usersRouter.post('/', createUserValidator, createUser);
 usersRouter.get('/', getAllUsers);
-usersRouter.patch('/:id', updateProfileUser);
-usersRouter.delete('/:id', deleteUser);
+usersRouter.patch('/:id', userExists, updateProfileUser);
+usersRouter.delete('/:id', userExists, deleteUser);
 
 module.exports = { usersRouter };
