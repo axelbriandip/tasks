@@ -96,22 +96,9 @@ const insertFinishDate = async (req, res) => {
     try {
         // received finish date
         const { finishDate } = req.body;
-        
-        // received id
-        const { id } = req.params;
 
-        // ¿exists task?
-        const task = await Tasks.findOne({ where: { id, status: 'active' } });
-
-        // if not exists
-        if( !task ) {
-            return res.status(404).json({
-                status: 'error',
-                data: {
-                    message: 'task active not found'
-                }
-            })
-        }
+        // received task
+        const { task } = req;
 
         const result = compareDates( task.limitDate, finishDate );
 
@@ -142,18 +129,7 @@ const insertFinishDate = async (req, res) => {
 
 const deleteTask = async (req, res) => {
     try {
-        const { id } = req.params;
-
-        const task = await Tasks.findOne({ where: { id } });
-
-        if( !task ) {
-            return res.status(404).json({
-                status: 'error',
-                data: {
-                    message: 'task not found'
-                }
-            })
-        }
+        const { task } = req;
 
         task.update({ status: 'cancelled' });
 
