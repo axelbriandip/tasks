@@ -2,11 +2,19 @@
 const { Tasks } = require('../models/tasks.model');
 const { Users } = require('../models/users.model');
 
+const compareDates = (limit, finish) => {
+    const lim = `${limit.getFullYear()}-${limit.getMonth()+1}-${limit.getDate()}`;
+    const finishConverted = new Date(finish);
+    const fin = `${finishConverted.getFullYear()}-${finishConverted.getMonth()+1}-${finishConverted.getDate()}`;
+    if(fin > lim) return 1 // task late
+    else return 2 // task completed
+}
+
 const getAllTasks = async (req, res) => {
     try {
         // received all users
         const tasks = await Tasks.findAll({
-            attributes: [ 'id', 'title', 'startDate', 'limitDate', 'finishDate' ],
+            attributes: [ 'id', 'title', 'startDate', 'limitDate', 'finishDate', 'status' ],
             include: { model: Users, attributes: [ 'id', 'name', 'email' ] }
         });
 
@@ -93,20 +101,31 @@ const insertFinishDate = async (req, res) => {
         const { id } = req.params;
 
         // ¿exists task?
-        const task = await Tasks.findOne({ where: { id } });
+        const task = await Tasks.findOne({ where: { id, status: 'active' } });
 
         // if not exists
         if( !task ) {
             return res.status(404).json({
                 status: 'error',
                 data: {
-                    message: 'task not found'
+                    message: 'task active not found'
                 }
             })
         }
 
-        // if exists
-        await task.update({ finishDate });
+        const result = compareDates( task.limitDate, finishDate );
+
+        if( result == 1 ) {
+            await task.update({
+                finishDate,
+                status: 'late'
+            });
+        } else {
+            await task.update({
+                finishDate,
+                status: 'completed'
+            });
+        }
 
         // response
         res.status(200).json({
